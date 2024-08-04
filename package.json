@@ -1,0 +1,17 @@
+{
+  "name": "node-hmr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "simp",
+  "license": "ISC",
+  "bin": {
+    "node-hmr": "node ./bin/index.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0"
+  }
+}
