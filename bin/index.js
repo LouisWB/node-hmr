@@ -13,5 +13,4 @@ const exec_path = _isDir(target_path)
 _run(exec_path);
 
 const watcher = chokidar.watch(exec_path);
-
 watcher.on('change', _listenFileChange(exec_path));
