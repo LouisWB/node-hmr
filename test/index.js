@@ -1,2 +1,3 @@
-const a = 'dasdas';
-console.log({ a, b: 2 });
+const { a } = require('./depend.js');
+a();
+console.log(333);
