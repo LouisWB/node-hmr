@@ -24,10 +24,12 @@ function _spawnSync(_path) {
   const stderr = result.stderr.toString(); // 命令执行的标准错误
   let pid = result.pid; // pid
   process.stdout.clearLine();
-  process.stdout.write(`\r----------------divide----------------\n`);
+  process.stdout.write('\n');
+  process.stdout.write(
+    `\r--------------------------------divide--------------------------------\n`
+  );
   process.stdout.clearLine();
   process.stdout.write(`\r${stderr || stdout}`);
-  process.stdout.write(`----------------divide----------------\n`);
 
   return pid;
 }
@@ -40,17 +42,21 @@ let key_word_regex = /require\(('|")([^)]+)\1\)/g;
 const ext_regex = /(.+?)(?:\.(.+))?$/;
 
 function _judgeCommonjs(_path) {
+  const msg = { commonjs: true, depend_hot: true };
+
   const _env_path = path.join(path.resolve(_path, '..'));
   const package_path = path.join(path.resolve(_env_path, 'package.json'));
-
+  msg['packages.json'] = package_path || null;
   try {
-    fs.accessSync(package_path, fs.constants.F_OK);
+    const isAccess = fs.accessSync(package_path, fs.constants.F_OK);
+    if (!isAccess) return;
     const package_str = fs.readFileSync(package_path);
-    if (!package_str) return;
 
     // 获得package.json文件内容
     const package_json = JSON.parse(package_str);
     if (package_json.type && package_json.type === 'module') {
+      msg.commonjs = false;
+      msg.depend_hot = false;
       key_word_regex = null;
     } else {
       // commonjs 文件，正则匹配require
@@ -73,10 +79,11 @@ function _judgeCommonjs(_path) {
       }
       _watchRequire(matchList, _path);
     }
-  } catch (err) {
+  } catch (_err) {
     // 不存在
-    console.error('No Read access');
+    // throw new Error('package.json文件不存在');
   }
+  console.table(msg);
 }
 
 /**

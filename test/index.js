@@ -1,2 +1,2 @@
 const a = 'dasdas';
-console.log({ a });
+console.log({ a, b: 2 });
