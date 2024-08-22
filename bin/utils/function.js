@@ -151,7 +151,6 @@ function _judgeCommonjs(_path) {
  * 监听require引入文件
  */
 let require_watcher = null;
-let mtimes = new Map();
 
 function _watchRequire(list, _path) {
   if (require_watcher) {
@@ -162,24 +161,29 @@ function _watchRequire(list, _path) {
     ignoreInitial: true,
   });
   require_watcher.on('change', (path) => {
-    // 获取文件最后修改时间
-    const stats = fs.statSync(path);
-    const mtime = stats.mtime.getTime();
-
-    // 和存储对比,如果相同则说明重复触发
-    if (mtimes.get(path) === mtime) return;
-    // 更新最后修改时间存储
-    mtimes.set(path, mtime);
-    _run(_path);
+    _run(_path, path);
   });
 }
 
 /**
  *
  * @param {String} _path
+ * @param {String} change_path
  */
 let pid;
-function _run(_path) {
+let mtimes = new Map();
+function _run(_path, change_path) {
+  if (change_path) {
+    // 获取文件最后修改时间
+    const stats = fs.statSync(change_path);
+    const mtime = stats.mtime.getTime();
+
+    // 和存储对比,如果相同则说明重复触发
+    if (mtimes.get(change_path) === mtime) return;
+    // 更新最后修改时间存储
+    mtimes.set(change_path, mtime);
+  }
+
   if (!pid) {
     _judgeCommonjs(_path);
   }
@@ -200,7 +204,8 @@ function _listenFileChange(_path) {
       process.kill(pid, 0);
     } catch (err) {
       if (err.code === 'ESRCH') {
-        pid = _spawnSync(_path);
+        // pid = _spawnSync(_path);
+        _run(_path, _path);
       } else {
         throw err;
       }

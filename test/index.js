@@ -1,3 +1,3 @@
 const { a } = require('./depend.js');
 a();
-console.log(333);
+console.log(111);
