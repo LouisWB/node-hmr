@@ -2,9 +2,18 @@
 
 const chokidar = require('chokidar');
 const path = require('path');
-const { _isDir, _listenFileChange, _run } = require('./utils/function');
+const {
+  _isDir,
+  _listenFileChange,
+  _run,
+  _judgePath,
+} = require('./utils/function');
 
 const [args_path] = process.argv.slice(2);
+
+// 传入参数不是路径则不执行监听操作
+if (!_judgePath(args_path)) return;
+
 const target_path = path.join(path.resolve('./'), args_path);
 let exec_path;
 try {

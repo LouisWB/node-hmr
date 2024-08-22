@@ -227,10 +227,50 @@ function _loading(_text) {
   }, 100);
 }
 
+/**
+ * 判断指令后参数是否为路径，或是指令。
+ * @param {String} options
+ * @returns {Boolean}
+ */
+const regex = /^-([\s\S]+)$/;
+const commandFunctionEnum = {
+  v: _version,
+  V: _version,
+};
+function _judgePath(options) {
+  const prefix = '-';
+
+  if (options.startsWith(prefix)) {
+    // 判断指令格式
+    const match = options.match(regex);
+
+    if (match) {
+      const command = match[1];
+      if (commandFunctionEnum[command]) {
+        commandFunctionEnum[command]();
+      } else {
+        console.log(`指令 ${options} 不存在!`);
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+/**
+ * 返回当前插件的版本
+ * @returns {String}
+ */
+function _version() {
+  const package = require('../../package.json');
+  console.log(`v${package.version}`);
+}
+
 module.exports = {
   _isDir,
   _spawnSync,
   _listenFileChange,
   _loading,
   _run,
+  _judgePath,
 };
