@@ -1,5 +1,5 @@
 module.exports = {
   a: () => {
-    console.log('Hello 22323!');
+    console.log('Hello 123!');
   },
 };

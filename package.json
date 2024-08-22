@@ -1,6 +1,6 @@
 {
   "name": "nhmr",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "node hot module replacement",
   "main": "index.js",
   "scripts": {
